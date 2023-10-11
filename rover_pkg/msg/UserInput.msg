@@ -1,0 +1,9 @@
+string controlMode
+string keysPressed
+float32 ljx
+float32 ljy
+float32 rjx
+float32 rjy
+bool but1
+bool but2
+bool but3

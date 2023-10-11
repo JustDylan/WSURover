@@ -1,0 +1,28 @@
+FloatLayout:	
+		
+	canvas:
+		Color: 
+			rgb: 1, 0.2, 0.1
+			
+		Rectangle:
+            size: (self.size[0]*2, self.size[1])            
+            pos: (self.size[0]/10, self.size[1]/9*8)
+		
+	MDLabel:
+		id: messages_label
+		text: ("Hello, World")
+		halign: "center"
+		size_hint: 0.1,0.1
+		pos_hint: {"center_x": 0.6, "center_y": 0.9}
+    	text_color: 0, 0, 1, 1
+		
+	MDRaisedButton:
+		text:"epic button"
+		md_bg_color: app.theme_cls.primary_dark
+		
+		size_hint: 0.1,0.1
+		pos_hint: {"center_x": 0.5, "center_y": 0.8}
+		
+		on_press: app.my_function(*args)
+		
+	

@@ -1,0 +1,24 @@
+import rospy
+
+
+GENERAL
+
+if __name__ == '__main__':
+    try :
+        [insert function here]
+    except rospy.ROSInterruptException:
+        pass
+        
+RATE:        
+rate = rospy.Rate(10)
+
+SPIN IN FUNCTION:
+rospy.spin()
+
+SUBSCRIBER
+rospy.Subscriber('videostream', CompressedImage, callback)
+	
+PUBLISHER:
+	pub = rospy.Publisher('topic', 'data type', queue_size=1)
+        rospy.init_node('node name', anonymous=True)
+	pub.publish('pub')

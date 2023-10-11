@@ -1,0 +1,22 @@
+<launch>
+	<node pkg="rover_pkg" type="user_input_keyboard.py" name="user_input_keyboard" output="screen"></node>	
+	<node pkg="rover_pkg" type="rover_control_interface.py" name="rover_control_interface" output="screen"></node>	
+	<node pkg="rover_pkg" type="tool_control_interface.py" name="tool_control_interface" output="screen"></node>
+		
+	<node pkg="rover_pkg" type="basic_arm_control_interface.py" name="arm_control" output="screen"></node>
+	<node pkg="rover_pkg" type="advanced_arm_control_interface.py" name="arm_control_node" output="screen"></node>
+		
+	<node pkg="rover_pkg" type="rocker_bogie_control_interface.py" name="rocker_bogie_control" output="screen"></node>	
+	<node pkg="rover_pkg" type="sensor_input.py" name="sensor_input_node" output="screen"></node>
+	
+	<node pkg="rover_pkg" type="camera_gui_node.py" name="camera_gui_node" output="screen"></node>
+	<node pkg="rover_pkg" type="gui_node.py" name="gui_node" output="screen"></node>
+	
+	<node pkg="rover_pkg" type="camera1.py" name="camera_1_node" output="screen"></node>
+	
+	<node pkg="pwm_pca9685" type="pca9685_node" name="PCA_node_motor" output="screen"></node>	
+	<node pkg="pwm_pca9685_0" type="pca9685_node_0" name="PCA_node_general" output="screen"></node>
+
+	
+</launch>
+
