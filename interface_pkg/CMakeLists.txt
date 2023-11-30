@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  #rover_pkg
+  rover_pkg
 )
 
 ## System dependencies are found with CMake's conventions
@@ -106,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES interface_pkg
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs rover_pkg
 #  DEPENDS system_lib
 )
 
@@ -222,5 +222,5 @@ target_link_libraries( gamepad_interface
 target_link_libraries(gamepad_interface ${SDL2_LIBRARIES})
 
 target_link_libraries(gamepad_interface ${catkin_LIBRARIES})
-#add_dependencies(gamepad_interface gamepad_interface_generate_messages_cpp)
+add_dependencies(gamepad_interface ${catkin_EXPORTED_TARGETS})
 

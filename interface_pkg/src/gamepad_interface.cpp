@@ -4,8 +4,7 @@
 #include <iostream>
 
 #include "ros/ros.h"
-#include "../../../../devel/include/rover_pkg/UserInput.h"
-//#include "rover_pkg/UserInput.h"
+#include "rover_pkg/UserInput.h"
 
 using std::cout;
 using std::endl;
@@ -115,9 +114,11 @@ int main(int argc, char *argv[])
 					else if(ev.type == SDL_CONTROLLERAXISMOTION)
 					{
 						//print joystick activity
+						/*
 						cout << "Controller: " << ev.caxis.which << endl;
 						cout << "Axis: " << (int)ev.caxis.axis << endl;
 						cout << "Value: " << ev.caxis.value << endl;
+						*/
 						
 						if((int)ev.caxis.axis == 1)
 						{
@@ -130,6 +131,12 @@ int main(int argc, char *argv[])
 						
 					}
 				}
+				
+				//display contents of user input message
+				cout << "ljx: " << msg.ljx << endl;
+				cout << "ljy: " << msg.ljy << endl;
+				cout << "rjx: " << msg.rjx << endl;
+				cout << "rjy: " << msg.rjy << endl;
 				
 				gpPublisher.publish(msg);
 				
