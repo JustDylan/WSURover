@@ -27,11 +27,14 @@ def pwmMap(value):
 	return motorPWMzero + value*motorMaxPWMchange	
 
 def basic_controller(user_data):	
-	motorTargetVels[0] = pwmMap(user_data.ljx*rb_fr_inv)
-	motorTargetVels[1] = pwmMap(user_data.ljx*rb_rr_inv)
-	motorTargetVels[3] = pwmMap(user_data.rjx*rb_fl_inv)
-	motorTargetVels[4] = pwmMap(user_data.rjx*rb_ml_inv)
-	motorTargetVels[5] = pwmMap(user_data.rjx*rb_rl_inv)	
+	speed = 0.8
+	#Front right
+	motorTargetVels[0] = pwmMap(user_data.ljy*rb_fr_inv*speed)
+	motorTargetVels[1] = pwmMap(user_data.ljy*rb_rr_inv*speed)
+	motorTargetVels[2] = pwmMap(user_data.ljy*rb_mr_inv*speed)
+	motorTargetVels[3] = pwmMap(user_data.rjy*rb_fl_inv*speed)
+	motorTargetVels[4] = pwmMap(user_data.rjy*rb_ml_inv*speed)
+	motorTargetVels[5] = pwmMap(user_data.rjy*rb_rl_inv*speed)	
 
 def keyboard_controller(user_data):
 	keys_pressed = user_data.keysPressed

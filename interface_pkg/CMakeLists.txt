@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  #rover_pkg
 )
 
 ## System dependencies are found with CMake's conventions
@@ -204,3 +205,22 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+find_package(SDL2 REQUIRED)
+#find_package(dlfcn REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+#target_link_libraries(gamepad_interface ${OPENSSL_LIBRARIES})
+
+find_library( DL_LIBRARY libdl.so)
+
+add_executable(gamepad_interface src/gamepad_interface.cpp)
+
+target_link_libraries( gamepad_interface
+  ${DL_LIBRARY}
+)
+
+target_link_libraries(gamepad_interface ${SDL2_LIBRARIES})
+
+target_link_libraries(gamepad_interface ${catkin_LIBRARIES})
+#add_dependencies(gamepad_interface gamepad_interface_generate_messages_cpp)
+
