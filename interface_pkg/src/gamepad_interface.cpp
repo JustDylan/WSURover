@@ -122,11 +122,11 @@ int main(int argc, char *argv[])
 						
 						if((int)ev.caxis.axis == 1)
 						{
-							msg.ljy = ((float)ev.caxis.value)/32768.0;
+							msg.ljy = ((float)ev.caxis.value)/-32768.0;
 						}
 						else if((int)ev.caxis.axis == 3)
 						{
-							msg.rjy = ((float)ev.caxis.value)/32768.0;
+							msg.rjy = ((float)ev.caxis.value)/-32768.0;
 						}
 						
 					}

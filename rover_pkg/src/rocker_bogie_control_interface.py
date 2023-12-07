@@ -6,9 +6,9 @@ from rover_pkg.msg import UserInput
 
 rb_fr_inv = -1
 rb_mr_inv = -1
-rb_rr_inv = 1
+rb_rr_inv = -1
 rb_fl_inv = 1
-rb_ml_inv = -1
+rb_ml_inv = 1
 rb_rl_inv = 1
 
 motorPWMzero = 1450 # PWM pulse width associated with zero velocity
@@ -29,12 +29,17 @@ def pwmMap(value):
 def basic_controller(user_data):	
 	speed = 0.8
 	#Front right
-	motorTargetVels[0] = pwmMap(user_data.ljy*rb_fr_inv*speed)
-	motorTargetVels[1] = pwmMap(user_data.ljy*rb_rr_inv*speed)
-	motorTargetVels[2] = pwmMap(user_data.ljy*rb_mr_inv*speed)
-	motorTargetVels[3] = pwmMap(user_data.rjy*rb_fl_inv*speed)
-	motorTargetVels[4] = pwmMap(user_data.rjy*rb_ml_inv*speed)
-	motorTargetVels[5] = pwmMap(user_data.rjy*rb_rl_inv*speed)	
+	motorTargetVels[0] = pwmMap(user_data.rjy*rb_fr_inv*speed)
+	#middle right
+	motorTargetVels[1] = pwmMap(user_data.rjy*rb_mr_inv*speed)
+	#middle left
+	motorTargetVels[2] = pwmMap(user_data.ljy*rb_ml_inv*speed)
+	#front left
+	motorTargetVels[3] = pwmMap(user_data.ljy*rb_fl_inv*speed)
+	#rear right
+	motorTargetVels[4] = pwmMap(user_data.rjy*rb_rr_inv*speed)
+	#rear left
+	motorTargetVels[5] = pwmMap(user_data.ljy*rb_rl_inv*speed)	
 
 def keyboard_controller(user_data):
 	keys_pressed = user_data.keysPressed
