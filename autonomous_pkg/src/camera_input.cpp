@@ -68,10 +68,14 @@ int main(int argc, char *argv[])
 			break;
 		}
 		
-		//publish converted image msg
+		//header for image message
+		std_msgs::Header imgMsgHeader = std_msgs::Header();
+		imgMsgHeader.stamp = ros::Time::now();
+		
+		//publish converted image message
 		pub.publish(
 			cv_bridge::CvImage(
-				std_msgs::Header(), 
+				imgMsgHeader, 
 					"bgr8", 
 					capFrame
 				).toImageMsg());

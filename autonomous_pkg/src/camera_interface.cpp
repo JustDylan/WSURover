@@ -56,7 +56,7 @@ using namespace cv;
     cv::Point text_point = cvPoint(cv_ptr->image.cols - 20 - text.width, cv_ptr->image.rows - 20 - text.height);
 
     // Draw a black background behind text
-    cv::rectangle(cv_ptr->image, text_point, text_point + cv::Point(text.width, -text.height), CV_RGB(0,0,0), FILLED);
+    cv::rectangle(cv_ptr->image, text_point - cv::Point(2, -2), text_point + cv::Point(text.width+2, -text.height-2), CV_RGB(0,0,0), FILLED);
 
     // Draw the timestamp on the rectangle
     cv::putText(cv_ptr->image, ss.str().c_str(), text_point, FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(255,255,255));
