@@ -26,15 +26,15 @@ fontName = "Times New Roman"
 captureImageMode = 0
 
 imageRatio = 16/9
-capture_path = "/home/wsurover/rover_pkg/src/rover_pkg/src/image_captures/"
+capture_path = "/home/mac/Desktop/interface_workspace/src/WSURover/rover_pkg/src/image_captures/"
 
 pygame.init()
 
-image1 = pygame.image.load("/home/wsurover/rover_pkg/src/rover_pkg/src/gui_recources/no_file_loaded.jpeg")
-image1raw = pygame.image.load("/home/wsurover/rover_pkg/src/rover_pkg/src/gui_recources/no_file_loaded.jpeg")
+image1 = pygame.image.load("/home/mac/Desktop/interface_workspace/src/WSURover/rover_pkg/src/gui_recources/no_file_loaded.jpeg")
+image1raw = pygame.image.load("/home/mac/Desktop/interface_workspace/src/WSURover/rover_pkg/src/gui_recources/no_file_loaded.jpeg")
 
-image2 = pygame.image.load("/home/wsurover/rover_pkg/src/rover_pkg/src/gui_recources/filler.jpeg")
-image2raw = pygame.image.load("/home/wsurover/rover_pkg/src/rover_pkg/src/gui_recources/filler.jpeg")
+image2 = pygame.image.load("/home/mac/Desktop/interface_workspace/src/WSURover/rover_pkg/src/gui_recources/filler.jpeg")
+image2raw = pygame.image.load("/home/mac/Desktop/interface_workspace/src/WSURover/rover_pkg/src/gui_recources/filler.jpeg")
 
 rawImages = [image1raw,image2raw]
 	
@@ -55,6 +55,7 @@ def imageCallback(frame):
 		global image1
 		rawImages[0] = pygame.image.frombuffer(frame.tostring(), frame.shape[1::-1],"RGB")
 		image1 = rawImages[0]
+		
 		
 def imageCallback2(frame):
 	if not captureImageMode:
@@ -206,7 +207,7 @@ if __name__ == '__main__':
 			drag = 1
 		if drag:
 			tilt_pos = (mousePos[0] - pressedPos[0])/radius
-			pan_pos = (mousePos[1] - pressedPos[1])/radius
+			pan_pos = -1*(mousePos[1] - pressedPos[1])/radius
 		if not pressed:
 			tilt_pos = 0
 			pan_pos = 0
