@@ -96,9 +96,9 @@ int main(int argc, char *argv[])
 			
 	ros::Rate loop_rate(30);
 
-	sensor_msgs::ImagePtr frameMsg;
+	//sensor_msgs::ImagePtr frameMsg;
 
-	Mat myImage;//Declaring a matrix to load the frames//
+	Mat capFrame;//Declaring a matrix to load the frames//
 	//namedWindow("Video Player", WINDOW_NORMAL);//Declaring the video to show the video//
 	//resizeWindow("Video Player", 640, 480);
 	
@@ -116,19 +116,18 @@ int main(int argc, char *argv[])
 	}
 	while (ros::ok())
 	{
-		cap >> myImage;
+		cap >> capFrame;
 		
 		//Breaking the loop if no video frame is detected
-		if (myImage.empty()){
+		if (capFrame.empty()){
 			break;
 		}
 		
-		cv_bridge::CvImage frameMsg;
-		frameMsg.image = myImage;
+		//frameMsg.image = myImage;
 		
 		//publish image msg
 		//frameMsg = frameMsg.toImageMsg();
-		pub.publish(frameMsg.toImageMsg());
+		pub.publish(cv_bridge::CvImage(std_msgs::Header(), "bgr8", capFrame).toImageMsg());
 		
 		//Showing the video
 		//imshow("Video Player", myImage);
