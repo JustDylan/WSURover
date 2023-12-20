@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	while(ros::ok())
 	{
 		ros::spinOnce();
-		waitKey(25);
+		waitKey(33);
 	}
 
 	return 0;
