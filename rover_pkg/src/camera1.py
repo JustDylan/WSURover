@@ -6,9 +6,9 @@ from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
 
 def publish_image():
-    pub = rospy.Publisher('videostream', CompressedImage, queue_size=1)
+    pub = rospy.Publisher('videostream', CompressedImage, queue_size=0)
     rospy.init_node('video_pub_py', anonymous=True)
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(30)
     cap = cv2.VideoCapture(0)
     br = CvBridge()
     while not rospy.is_shutdown():

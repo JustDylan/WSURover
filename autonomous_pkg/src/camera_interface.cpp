@@ -18,7 +18,7 @@ using namespace cv;
 
   // Topics
   static const std::string IMAGE_TOPIC = "/camera/rgb/image_raw";
-  static const std::string SUBSCRIBE_TOPIC = "camera_stream1";
+  static const std::string SUBSCRIBE_TOPIC = "/videostream";
 
   // Publisher
   ros::Publisher pub;
@@ -26,11 +26,11 @@ using namespace cv;
   //Subscriber
   ros::Subscriber sub;
 
-  void imageCallBack(const sensor_msgs::ImageConstPtr& msg)
+  void imageCallBack(const sensor_msgs::CompressedImageConstPtr& msg)
   {
     std_msgs::Header msg_header = msg->header;
     std::string frame_id = msg_header.frame_id.c_str();
-    ROS_INFO_STREAM("New Image from " << frame_id);
+    //ROS_INFO_STREAM("New Image from " << frame_id);
 
     cv_bridge::CvImagePtr cv_ptr;
     try
@@ -50,20 +50,20 @@ using namespace cv;
     ss << std::asctime(std::localtime(&result));
 
     // Get the size of the text for measurement
-    cv::Size text = cv::getTextSize(ss.str().c_str(), FONT_HERSHEY_SIMPLEX, 0.4, 1, 0);
+    //cv::Size text = cv::getTextSize(ss.str().c_str(), FONT_HERSHEY_SIMPLEX, 0.4, 1, 0);
 
     // Put the text in the bottom right corner
-    cv::Point text_point = cvPoint(cv_ptr->image.cols - 20 - text.width, cv_ptr->image.rows - 20 - text.height);
+    //cv::Point text_point = cvPoint(cv_ptr->image.cols - 20 - text.width, cv_ptr->image.rows - 20 - text.height);
 
     // Draw a black background behind text
-    cv::rectangle(cv_ptr->image, text_point - cv::Point(2, -2), text_point + cv::Point(text.width+2, -text.height-2), CV_RGB(0,0,0), FILLED);
+    //cv::rectangle(cv_ptr->image, text_point - cv::Point(2, -2), text_point + cv::Point(text.width+2, -text.height-2), CV_RGB(0,0,0), FILLED);
 
     // Draw the timestamp on the rectangle
-    cv::putText(cv_ptr->image, ss.str().c_str(), text_point, FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(255,255,255));
+    //cv::putText(cv_ptr->image, ss.str().c_str(), text_point, FONT_HERSHEY_SIMPLEX, 0.4, CV_RGB(255,255,255));
 
     // Draw an example circle on the video stream
-    if (cv_ptr->image.rows > 60 && cv_ptr->image.cols > 60)
-      cv::circle(cv_ptr->image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
+    //if (cv_ptr->image.rows > 60 && cv_ptr->image.cols > 60)
+    //  cv::circle(cv_ptr->image, cv::Point(50, 50), 10, CV_RGB(255,0,0));
 
     // Draw an example crosshair
     cv::drawMarker(cv_ptr->image, cv::Point(cv_ptr->image.cols/2, cv_ptr->image.rows/2),  cv::Scalar(0, 0, 255), cv::MARKER_CROSS, 10, 1);
