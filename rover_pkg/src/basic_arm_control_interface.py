@@ -2,7 +2,6 @@
 import rospy
 
 from rover_pkg.msg import UserInput
-from rover_pkg.msg import SensorData
 from rover_pkg.msg import ArmData
 
 still = 1450
