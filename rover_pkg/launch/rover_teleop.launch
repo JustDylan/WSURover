@@ -1,5 +1,4 @@
-<launch>
-	<node pkg="rover_pkg" type="user_input_keyboard.py" name="user_input_keyboard" output="screen"></node>	
+<launch>	
 	<node pkg="rover_pkg" type="rover_control_interface.py" name="rover_control_interface" output="screen"></node>	
 	<node pkg="rover_pkg" type="tool_control_interface.py" name="tool_control_interface" output="screen"></node>
 		
@@ -8,9 +7,6 @@
 		
 	<node pkg="rover_pkg" type="rocker_bogie_control_interface.py" name="rocker_bogie_control" output="screen"></node>	
 	<node pkg="rover_pkg" type="sensor_input.py" name="sensor_input_node" output="screen"></node>
-	
-	<node pkg="rover_pkg" type="camera_gui_node.py" name="camera_gui_node" output="screen"></node>
-	<node pkg="rover_pkg" type="gui_node.py" name="gui_node" output="screen"></node>
 	
 	<node pkg="rover_pkg" type="camera1.py" name="camera_1_node" output="screen"></node>
 	
