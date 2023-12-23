@@ -11,6 +11,87 @@
 using std::cout;
 using std::endl;
 
+struct Point {
+	float x;
+	float y;
+	
+	Point(float x, float y) {
+		this->x = x;
+		this->y = y;
+	}
+};
+
+float mod(float const x, float const y)
+{
+	if(x < 0.0f)
+	{
+		return fmodf(x, y) + y;
+	}
+	else
+	{
+		return fmodf(x, y);
+	}
+}
+
+float joystickSmoothing(float x)
+{
+	float const c = 4.0f;
+	return (powf(expf(c)+1, fabsf(x)) - 1)/expf(c);
+}
+
+float h(float const x)
+{
+	return (mod(x + M_PI + M_PI/4.0f, 2.0f*M_PI) - 
+		mod(x + M_PI/4.0f, 2.0f*M_PI)) / M_PI;
+}
+
+float g(float const x)
+{
+	return (mod(x + M_PI/4.0f, M_PI) * 4.0f/M_PI - 2.0f) * h(x);
+}
+
+//if side == false then velocity will be returned for left drive train
+//v is the vector whose y axis determines velocity and 
+//x axis determines angular velocity
+float getVelocity(Point v, bool side) 
+{
+	//v magnitude
+	float vMagnitude = 
+		sqrt(v.x*v.x + v.y*v.y);
+		
+	//angle of vector v
+	float const vAngle = 
+		copysignf(acosf(v.x/vMagnitude), v.y);
+	
+	//limit vector magnitude between deadzone and 1.0
+	if(vMagnitude > 1.0f)
+		vMagnitude = 1.0f;
+	else if(vMagnitude < 0.1f)
+		return 0.0f;
+		
+	float b = 7.0f*M_PI/4.0f;
+	if(side)
+	{
+		b *= -1.0f;
+	}
+	
+	//calculate maximum magnitude for side
+	
+	
+	float const g1 = g(vAngle - b);
+	float const g2 = g(vAngle - b - M_PI/2.0f);
+	
+	float const maxMagnitude = (g1 - g2) / 2.0f;
+	
+	//velocity for selected side
+	float const sideMagnitude = maxMagnitude * vMagnitude;
+	
+	cout << "side" << (int)side << "Angle: " << vAngle << endl <<
+		"side" << (int)side << "Magnitude: " << sideMagnitude << endl;
+	
+	return sideMagnitude;
+}
+
 int main(int argc, char *argv[])
 {
 	//initialize ros
@@ -110,16 +191,8 @@ int main(int argc, char *argv[])
 			ccMsg.QDC_SIG1 = 0;
 			ccMsg.tool_select = 0;
 			
-			struct {
-				float x;
-				float y;
-			} leftStick, rightStick;
-			
-			leftStick.x = 0.0;
-			leftStick.y = 0.0;
-			
-			rightStick.x = 0.0;
-			rightStick.y = 0.0;
+			Point leftStick = Point(0.0f, 0.0f);
+			Point rightStick = Point(0.0f, 0.0f);
 			
 			//Event polling loop
 			while(isRunning && ros::ok())
@@ -174,11 +247,8 @@ int main(int argc, char *argv[])
 				//left joystick magnitude
 				float lStickMagnitude = sqrt(leftStick.x*leftStick.x + leftStick.y*leftStick.y);
 				
-				//right joystick magnitude
-				float rStickMagnitude = sqrt(rightStick.x*rightStick.x + rightStick.y*rightStick.y);
-				
-				
-				if(lStickMagnitude > 0.01)
+				//set camera tower orientation when joystick is beyond deadzone
+				if(lStickMagnitude > 0.05)
 				{
 					ccMsg.ctt = -leftStick.x*15000 + 8500;
 					if(ccMsg.ctt < 2400)
@@ -197,31 +267,23 @@ int main(int argc, char *argv[])
 						ccMsg.ctp = 17200;
 					}
 				}
+				//Set camera tower to home position
 				else
 				{
 					ccMsg.ctt = 8500;
 					ccMsg.ctp = 10400;
 				}
 				
-				
-				if(rStickMagnitude > 0.01)
-				{
-					msg.ljy = cosf(copysignf(acosf(rightStick.x/rStickMagnitude), rightStick.y) - M_PI/4.0)*rStickMagnitude/1.3;
-					msg.rjy = cosf(copysignf(acosf(rightStick.y/rStickMagnitude), rightStick.x) + M_PI/4.0)*rStickMagnitude/1.3;
-				}
-				else
-				{
-					msg.rjy = 0.0;
-					msg.ljy = 0.0;
-				}
+				//Set drivetrain velocity
+				msg.ljy = getVelocity(rightStick, false);
+				msg.rjy = getVelocity(rightStick, true);
 				
 				
 				cout << "x1: " << leftStick.x << endl <<
 					"y1: " << leftStick.y << endl <<
 					"x2: " << rightStick.x << endl <<
 					"y2: " << rightStick.y << endl <<
-					"l1: " << lStickMagnitude << endl <<
-					"r1: " << rStickMagnitude << "\n\n";
+					"l1: " << lStickMagnitude << "\n\n";
 					
 				
 				

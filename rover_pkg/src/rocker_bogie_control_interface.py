@@ -27,7 +27,7 @@ def pwmMap(value):
 	return motorPWMzero + value*motorMaxPWMchange	
 
 def basic_controller(user_data):	
-	speed = 0.8
+	speed = 1.0
 	#Front right
 	motorTargetVels[0] = pwmMap(user_data.rjy*rb_fr_inv*speed)
 	#middle right
@@ -92,7 +92,6 @@ def inputCallback(user_data):
 
 def updateMotorData(event):	
 	
-	# go through each motor and update the current velocity to approach target
 	for i in range(len(motorVels)):
 		targetVel = motorTargetVels[i]
 		currentVel = motorVels[i]		
@@ -100,22 +99,12 @@ def updateMotorData(event):
 		# if current velocity is not target, do something about it
 		if (currentVel != targetVel):			
 			
-			difference = targetVel - currentVel
-			
-			# new velocity = current velocity + direction*speed
-			newVel = currentVel + min(maxChange,abs(difference))* (abs(difference)/difference)
-			
 			# if within dead zone
-			if (newVel > motorPWMzero-motorMinPWMchange and newVel < motorPWMzero+ motorMinPWMchange):				
-				# if going from pos to neg
-				if (targetVel < motorPWMzero-motorMinPWMchange):
-					newVel = motorPWMzero-motorMinPWMchange
-				# if going from neg to pos
-				if (targetVel > motorPWMzero+motorMinPWMchange):
-					newVel = motorPWMzero+motorMinPWMchange
+			if (targetVel > motorPWMzero-motorMinPWMchange and targetVel < motorPWMzero+ motorMinPWMchange):				
+				targetVel = motorPWMzero;
 				
 			# write new velocity to array			
-			motorVels[i] = newVel
+			motorVels[i] = targetVel
 			
 	# publish the new data
 	data_out = RockerBogieData()	
