@@ -1,12 +1,36 @@
+//functions to manually load a dynamic library
 #include <dlfcn.h>
 
+//for HID input and creating application windows
 #include <SDL.h>
+
 #include <iostream>
 #include <math.h>
 
+//ros functions
 #include "ros/ros.h"
+
+//ros message for keyboard and joystick input
 #include "rover_pkg/UserInput.h"
+
+//ros message for camera orientation
 #include "rover_pkg/CameraControlData.h"
+
+//joystick smoothing variables
+float const JOYSTICK_DEADZONE = 0.1f;
+float const JOYSTICK_CURVE_COEFFICIENT = 4.0f;
+
+//home orientation for tower camera
+float const CAM_TILT_HOME = 8500;
+float const CAM_PAN_HOME = 10400;
+
+//maximum changes in tilt and pan angles of tower camera from home position
+float const CAM_TILT_MAX_DELTA = 15000;
+float const CAM_PAN_MAX_DELTA = 10400;
+
+//minimum and maximum angles for camera tilt and pan
+float const CAM_MIN = 2400;
+float const CAM_MAX = 17200;
 
 using std::cout;
 using std::endl;
@@ -21,6 +45,8 @@ struct Point {
 	}
 };
 
+//a positive only version of the modulus function
+//returns positive remainder of x/y
 float mod(float const x, float const y)
 {
 	if(x < 0.0f)
@@ -33,18 +59,22 @@ float mod(float const x, float const y)
 	}
 }
 
+//applies an exponential curve to x or outputs zero if within deadzone
 float joystickSmoothing(float x)
 {
 	float const c = 4.0f;
-	return (powf(expf(c)+1, fabsf(x)) - 1)/expf(c);
+	return (powf(expf(JOYSTICK_CURVE_COEFFICIENT) + 1.0f, fabsf(x)) - 1.0f) /
+		expf(JOYSTICK_CURVE_COEFFICIENT);
 }
 
+//cyclic pattern alternating between 1 and -1 with period of 4*PI
 float h(float const x)
 {
 	return (mod(x + M_PI + M_PI/4.0f, 2.0f*M_PI) - 
 		mod(x + M_PI/4.0f, 2.0f*M_PI)) / M_PI;
 }
 
+//A curve following a triangle wave pattern with a period of 4*PI
 float g(float const x)
 {
 	return (mod(x + M_PI/4.0f, M_PI) * 4.0f/M_PI - 2.0f) * h(x);
@@ -53,7 +83,7 @@ float g(float const x)
 //if side == false then velocity will be returned for left drive train
 //v is the vector whose y axis determines velocity and 
 //x axis determines angular velocity
-float getVelocity(Point v, bool side) 
+float getVelocity(Point v, bool side)
 {
 	//v magnitude
 	float vMagnitude = 
@@ -66,7 +96,7 @@ float getVelocity(Point v, bool side)
 	//limit vector magnitude between deadzone and 1.0
 	if(vMagnitude > 1.0f)
 		vMagnitude = 1.0f;
-	else if(vMagnitude < 0.1f)
+	else if(vMagnitude < JOYSTICK_DEADZONE)
 		return 0.0f;
 		
 	float b = 7.0f*M_PI/4.0f;
@@ -76,11 +106,8 @@ float getVelocity(Point v, bool side)
 	}
 	
 	//calculate maximum magnitude for side
-	
-	
 	float const g1 = g(vAngle - b);
 	float const g2 = g(vAngle - b - M_PI/2.0f);
-	
 	float const maxMagnitude = (g1 - g2) / 2.0f;
 	
 	//velocity for selected side
@@ -178,6 +205,8 @@ int main(int argc, char *argv[])
 			//rover navigation control message
 			rover_pkg::UserInput msg;
 			
+			msg.controlMode = "basic_controller";
+			
 			msg.ljx = 0.0;
 			msg.ljy = 0.0;
 			msg.rjx = 0.0;
@@ -186,8 +215,6 @@ int main(int argc, char *argv[])
 			//camera control message
 			rover_pkg::CameraControlData ccMsg;
 			
-			ccMsg.ctt = 7800;
-			ccMsg.ctp = 10400;
 			ccMsg.QDC_SIG1 = 0;
 			ccMsg.tool_select = 0;
 			
@@ -197,10 +224,6 @@ int main(int argc, char *argv[])
 			//Event polling loop
 			while(isRunning && ros::ok())
 			{
-				
-				
-				msg.controlMode = "basic_controller";
-			
 				//iterate through all present events
 				while(SDL_PollEvent(&ev) != 0)
 				{
@@ -245,33 +268,34 @@ int main(int argc, char *argv[])
 				}
 				
 				//left joystick magnitude
-				float lStickMagnitude = sqrt(leftStick.x*leftStick.x + leftStick.y*leftStick.y);
+				float lStickMagnitude = 
+					sqrt(leftStick.x*leftStick.x + leftStick.y*leftStick.y);
 				
 				//set camera tower orientation when joystick is beyond deadzone
-				if(lStickMagnitude > 0.05)
+				if(lStickMagnitude > JOYSTICK_DEADZONE)
 				{
-					ccMsg.ctt = -leftStick.x*15000 + 8500;
-					if(ccMsg.ctt < 2400)
+					ccMsg.ctt = -leftStick.x*CAM_TILT_MAX_DELTA + CAM_TILT_HOME;
+					if(ccMsg.ctt < CAM_MIN)
 					{
-						ccMsg.ctt = 2400;
-					} else if (ccMsg.ctt > 17200)
+						ccMsg.ctt = CAM_MIN;
+					} else if (ccMsg.ctt > CAM_MAX)
 					{
-						ccMsg.ctt = 17200;
+						ccMsg.ctt = CAM_MAX;
 					}
-					ccMsg.ctp = -leftStick.y*10400 + 10400;
-					if(ccMsg.ctp < 2400)
+					ccMsg.ctp = -leftStick.y*CAM_PAN_MAX_DELTA + CAM_PAN_HOME;
+					if(ccMsg.ctp < CAM_MIN)
 					{
-						ccMsg.ctp = 2400;
-					} else if (ccMsg.ctp > 17200)
+						ccMsg.ctp = CAM_MIN;
+					} else if (ccMsg.ctp > CAM_MAX)
 					{
-						ccMsg.ctp = 17200;
+						ccMsg.ctp = CAM_MAX;
 					}
 				}
 				//Set camera tower to home position
 				else
 				{
-					ccMsg.ctt = 8500;
-					ccMsg.ctp = 10400;
+					ccMsg.ctt = CAM_TILT_HOME;
+					ccMsg.ctp = CAM_PAN_HOME;
 				}
 				
 				//Set drivetrain velocity

@@ -15,7 +15,7 @@ using namespace std;
 //using namespace cv;
 
 //ROS publish topic
-static const std::string PUBLISH_TOPIC = "camera_stream1";
+static const std::string PUBLISH_TOPIC = "videostream";
 
 //Video settings
 //640x480 or 1280x960 at 30 fps, 2592x1944 at 15 fps

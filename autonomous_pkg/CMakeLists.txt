@@ -126,6 +126,7 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  include/autonomous_pkg
 )
 
 ## Declare a C++ library
@@ -218,3 +219,5 @@ add_executable(camera_input src/camera_input.cpp)
 target_link_libraries(camera_input ${catkin_LIBRARIES} ${OpenCV_INCLUDE_DIRS})
 add_executable(camera_interface src/camera_interface.cpp)
 target_link_libraries(camera_interface ${catkin_LIBRARIES} ${OpenCV_INCLUDE_DIRS})
+add_executable(detect_markers src/detect_markers.cpp)
+target_link_libraries(detect_markers ${catkin_LIBRARIES} ${OpenCV_INCLUDE_DIRS})

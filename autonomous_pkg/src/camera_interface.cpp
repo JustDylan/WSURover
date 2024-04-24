@@ -26,7 +26,7 @@ using namespace cv;
   //Subscriber
   ros::Subscriber sub;
 
-  void imageCallBack(const sensor_msgs::CompressedImageConstPtr& msg)
+  void imageCallBack(const sensor_msgs::ImageConstPtr& msg)
   {
     std_msgs::Header msg_header = msg->header;
     std::string frame_id = msg_header.frame_id.c_str();
@@ -42,6 +42,15 @@ using namespace cv;
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
+    
+    //TODO Aruco tag Test
+    /*
+    cv::Mat markerImage;
+    cv::aruco::Dictionary dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4x4_50);
+    cv::aruco::generage
+    */
+    
+    
 
     // Draw a timestamp of the current date and time in the top left of the image
     // FIX-ME: std::asctime appends a '\n' character to the end of the string
